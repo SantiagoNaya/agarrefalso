@@ -9,9 +9,20 @@ const Hero = () => {
 
             <div className="left-h">
                 <Header/>
+                {/* the best ad*/}
                 <div className="the-best-ad">
                     <div></div>
                     <span>the best fitness club in the town</span>
+                </div>
+                    {/* Hero Heading*/}
+                <div className="hero-text">
+                <div>
+                    <span className='stroke-text'> Entrena</span>
+                    <span>Tu</span>
+                </div>
+              <span>
+                  Cuerpo
+                </span>
                 </div>
             </div>
             <div className="right-h"> right side </div>
