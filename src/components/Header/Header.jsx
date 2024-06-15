@@ -10,10 +10,11 @@ const Header  = () => {
 
  <ul className='header-menu'>
     <li>Home</li>
-    <li>Programs</li>
-    <li>Why us</li>
-    <li>Plans</li>
-    <li>Testimonials</li>
+    <li>Programas</li>
+    <li>Nosotros</li>
+    <li>Planes</li>
+    <li>Testimonios</li>
+    <li>Logearse</li>
 
  </ul>
  

@@ -7,9 +7,9 @@ const Programs =() => {
     <div className="Program" id="programs">
           {/* header*/}
 <div className="Programs-header">
-          <span className='stroke-text'>Explore our</span>
-          <span> Programs</span>
-     <span className='stroke-text'> to shape you</span>
+          <span className='stroke-text'>Conoce Mas</span>
+          <span> Acerca de nuestros </span>
+     <span className='stroke-text'> Planes De Entrenamiento</span>
      </div>
      <div className="program-categories">
         {programsData.map((program)=>(
@@ -17,7 +17,7 @@ const Programs =() => {
               {program.image}
               <span>{program.heading}</span> 
               <span>{program.details}</span>
-              <div className="join-now"><span>join Now</span><img src={RightArrow} alt="" /></div>
+              <div className="join-now"><span>Unete ahora</span><img src={RightArrow} alt="" /></div>
           </div>
         ))}
      

@@ -2,6 +2,11 @@ import React from 'react'
 import './Join.css'
 
 const Join = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+    alert('Se envió el mail');
+};
+  
   return (
    <div className="Join" id="join-us">
 <div className='left-j'>
@@ -18,7 +23,8 @@ const Join = () => {
 </div>
 <div className='right-j'>
 
-<form action="" className="email-container">
+
+<form onSubmit={handleSubmit} className="email-container">
 <input type="email" name='user_email' placeholder='Ingresa tu email' />
 <button className='btn btn-j'>Unete Ahora</button>
 </form>
