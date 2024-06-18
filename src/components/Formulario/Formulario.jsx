@@ -1,76 +1,142 @@
 import React, { useState } from 'react';
-import './Formulario.css';
+import { useNavigate } from 'react-router-dom';
+import './Formulario.css'; // Asegúrate de crear este archivo CSS o de ajustar el estilo en línea.
 
-const Formulario = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        message: ''
-    });
+const Formulario = ({ plansList, setPlansList }) => {
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // manejo del formulario
-        console.log('Formulario enviado:', formData);
-    };
 
-    return (
-        <div className="form-container">
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="name">Nombre:</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="email">Correo Electrónico:</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="message">Mensaje:</label>
-                    <textarea
-                        id="message"
-                        name="message"
-                        value={formData.message}
-                        onChange={handleChange}
-                    ></textarea>
-                </div>
-                <button type="submit">Enviar</button>
-            </form>
+    
+  const [newPlan, setNewPlan] = useState({
+    name: '',
+    price: '',
+    hours: '',
+    consultation: '',
+    minibar: '',
+    description: '',
+  });
+  const [editingIndex, setEditingIndex] = useState(null);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewPlan((prevPlan) => ({ ...prevPlan, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (editingIndex !== null) {
+      const updatedPlans = [...plansList];
+      updatedPlans[editingIndex] = newPlan;
+      setPlansList(updatedPlans);
+      setEditingIndex(null);
+    } else {
+      setPlansList((prevPlans) => [...prevPlans, newPlan]);
+    }
+    setNewPlan({ name: '', price: '', hours: '', consultation: '', minibar: '', description: '' });
+  };
+
+  const handleEdit = (index) => {
+    setNewPlan(plansList[index]);
+    setEditingIndex(index);
+  };
+
+  const handleDelete = (index) => {
+    const updatedPlans = plansList.filter((_, i) => i !== index);
+    setPlansList(updatedPlans);
+  };
+
+  const handleBack = () => {
+    navigate('/');
+  };
+
+  return (
+    <div className="formulario-container">
+      <button onClick={handleBack}>Volver al inicio</button>
+      <form className="exercise-form" onSubmit={handleSubmit}>
+        <h2>{editingIndex !== null ? 'Editar plan' : 'Agregar plan'}</h2>
+        <div className="form-group">
+          <label>Nombre:</label>
+          <input
+            type="text"
+            name="name"
+            value={newPlan.name}
+            onChange={handleChange}
+            required
+          />
         </div>
-    );
+        <div className="form-group">
+          <label>Precio:</label>
+          <input
+            type="text"
+            name="price"
+            value={newPlan.price}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Horas de Ejercicio:</label>
+          <input
+            type="text"
+            name="hours"
+            value={newPlan.hours}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Consulta Gratuita con Entrenadores:</label>
+          <input
+            type="text"
+            name="consultation"
+            value={newPlan.consultation}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Acceso al Minibar:</label>
+          <input
+            type="text"
+            name="minibar"
+            value={newPlan.minibar}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Descripción:</label>
+          <input
+            type="text"
+            name="description"
+            value={newPlan.description}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <button type="submit">{editingIndex !== null ? 'Actualizar Plan' : 'Agregar Plan'}</button>
+      </form>
+      <div className="plans-list">
+        <h2>Planes de Ejercicio</h2>
+        <ul>
+          {plansList.map((plan, index) => (
+            <li key={index}>
+              <div>
+                <strong>{plan.name}</strong> - Precio: ${plan.price}
+                <p>Horas de Ejercicio: {plan.hours}</p>
+                <p>Consulta Gratuita con Entrenadores: {plan.consultation}</p>
+                <p>Acceso al Minibar: {plan.minibar}</p>
+                <p>Descripción: {plan.description}</p>
+              </div>
+              <button onClick={() => handleEdit(index)}>Editar</button>
+              <button onClick={() => handleDelete(index)}>Eliminar</button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
 };
 
 export default Formulario;
-
-
-
-
-
-
-
-
-
-
-
-
-
