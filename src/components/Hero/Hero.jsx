@@ -6,6 +6,7 @@ import hero_image_back from "../../assets/hero_image_back.png";
 import Heart from "../../assets/heart.png";
 import Calories from "../../assets/calories.png";
 const Hero = () => {
+  
     return (
         <div className="hero">
 
@@ -15,7 +16,7 @@ const Hero = () => {
                 {/* the best ad*/}
                 <div className="the-best-ad">
                     <div></div>
-                    <span>El Mejor Club de fitness en la ciudad</span>
+                    <span>the best fitness club in the town</span>
                 </div>
                     {/* Hero Heading*/}
                 <div className="hero-text">
@@ -56,7 +57,6 @@ const Hero = () => {
              </div>
         
             <div className="right-h"> 
-          
 
             <div className="heart-rate">
                 <img src={Heart} alt="" />
@@ -70,7 +70,7 @@ const Hero = () => {
            {/* calories*/}
             <div className="calories">
                 <img src={Calories} alt="" />
-                <span>Calorias Quemadas</span> <span>220 Kcal</span>
+                <span>Calories Quemadas</span> <span>220 Kcal</span>
           </div>
         </div>
         
