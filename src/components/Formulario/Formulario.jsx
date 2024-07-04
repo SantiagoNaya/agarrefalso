@@ -3,10 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import './Formulario.css'; // Asegúrate de crear este archivo CSS o de ajustar el estilo en línea.
 
 const Formulario = ({ plansList, setPlansList }) => {
-
-
-
-    
   const [newPlan, setNewPlan] = useState({
     name: '',
     price: '',
@@ -16,6 +12,7 @@ const Formulario = ({ plansList, setPlansList }) => {
     description: '',
   });
   const [editingIndex, setEditingIndex] = useState(null);
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -29,9 +26,11 @@ const Formulario = ({ plansList, setPlansList }) => {
       const updatedPlans = [...plansList];
       updatedPlans[editingIndex] = newPlan;
       setPlansList(updatedPlans);
+      setMessage('Editaste el plan');
       setEditingIndex(null);
     } else {
       setPlansList((prevPlans) => [...prevPlans, newPlan]);
+      setMessage('Añadiste un plan');
     }
     setNewPlan({ name: '', price: '', hours: '', consultation: '', minibar: '', description: '' });
   };
@@ -44,6 +43,7 @@ const Formulario = ({ plansList, setPlansList }) => {
   const handleDelete = (index) => {
     const updatedPlans = plansList.filter((_, i) => i !== index);
     setPlansList(updatedPlans);
+    setMessage('Eliminaste un plan');
   };
 
   const handleBack = () => {
@@ -53,6 +53,7 @@ const Formulario = ({ plansList, setPlansList }) => {
   return (
     <div className="formulario-container">
       <button onClick={handleBack}>Volver al inicio</button>
+      {message && <p className="message">{message}</p>}
       <form className="exercise-form" onSubmit={handleSubmit}>
         <h2>{editingIndex !== null ? 'Editar plan' : 'Agregar plan'}</h2>
         <div className="form-group">
