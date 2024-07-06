@@ -19,7 +19,6 @@ const Header  = () => {
     <li>Home</li>
     <li>Programas</li>
     <li>Nosotros</li>
-    <li>Planes</li>
     <li>Testimonios</li>
     <li onClick={goToFormulario}>Planes</li>
  </ul>
