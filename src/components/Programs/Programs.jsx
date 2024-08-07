@@ -12,8 +12,8 @@ const Programs =() => {
      <span className='stroke-text'> Planes De Entrenamiento</span>
      </div>
      <div className="program-categories">
-        {programsData.map((program)=>(
-          <div className="category">
+        {programsData.map((program, id)=>(
+          <div className="category" key={id}>
               {program.image}
               <span>{program.heading}</span> 
               <span>{program.details}</span>

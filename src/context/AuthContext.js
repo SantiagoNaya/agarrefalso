@@ -1,39 +1,91 @@
-// src/AuthContext.js
 import React, { createContext, useState, useEffect } from 'react';
-import usersData from '../utils/users.json';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-    if (storedUser) {
-      setUser(storedUser);
+    const userInLocalStorage = localStorage.getItem('user');
+    if (userInLocalStorage) {
+      try {
+        const storedUser = JSON.parse(userInLocalStorage);
+        const storedToken = localStorage.getItem('token');
+        if (storedUser && storedToken) {
+          setUser(storedUser);
+          setToken(storedToken);
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Correo o contraseña incorrectos.',
+        });
+      }
     }
   }, []);
 
-  const login = (username, password) => {
-    const foundUser = usersData.find(
-      (u) => u.username === username && u.password === password
-    );
+  const login = async (email, password) => {
+    console.log("email, password", { email, password });
+    try {
+      let contrasena = password;
+      const response = await axios.post('http://localhost:8888/login', { email, contrasena });
+      if(!response.data.success){
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Correo o contraseña incorrectos.',
+        });
+        return false;
+      }
+      const userData = email;
+      const tokenData = response.data.accessToken;
+      setUser(userData);
+      setToken(tokenData);
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('token', tokenData);
+      return true;
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Correo o contraseña incorrectos.',
+      });
+      return false;
+    }
+  };
 
-    if (foundUser) {
-      setUser(foundUser);
-      localStorage.setItem('user', JSON.stringify(foundUser));
-    } else {
-      alert('Invalid username or password');
+  const register = async (nombre, email, contrasena) => {
+    console.log("nombre, email, contrasena", { nombre, email, contrasena });
+    try {
+      const response = await axios.post('http://localhost:8888/register', { nombre, email, contrasena });
+      const userData = response.data.user;
+      const tokenData = response.data.token;
+      setUser(userData);
+      setToken(tokenData);
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('token', tokenData);
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Correo o contraseña incorrectos.',
+      });
     }
   };
 
   const logout = () => {
     setUser(null);
+    setToken(null);
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, token, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

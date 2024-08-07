@@ -1,22 +1,65 @@
-.header{
-    display: flex;
-    justify-content: space-between;
+/* src/components/Header/Header.css */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
 }
 
-.logo{
-    width: 10rem;
-    height: 3rem;
-}
-.header-menu{
-    list-style: none;
-    display: flex;
-    gap: 2rem;
-    color: rgb(255, 255, 255);
-
+.header-left .logo {
+  color: white;
+  font-size: 1.5rem;
+  text-decoration: none;
+  margin: 30px;
 }
 
-.header-menu>li:hover{
-    cursor: pointer;
-    color: var(--orange);
-    cursor: pointer;
+.header nav {
+  flex: 1;
+  text-align: right;
+}
+
+.header-menu {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.header-menu li {
+  position: relative;
+}
+
+.header-menu li a,
+.header-menu li button {
+  color: white;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 5px 10px;
+}
+
+.header-menu li a:hover,
+.header-menu li button:hover {
+  color: var(--orange);
+}
+
+.header-menu li::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -5px;
+  left: 50%;
+  background-color: var(--orange);
+  transition: width 0.3s, left 0.3s;
+}
+
+.header-menu li:hover::before {
+  width: 100%;
+  left: 0;
 }

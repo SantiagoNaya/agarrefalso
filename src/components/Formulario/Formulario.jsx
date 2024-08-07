@@ -1,49 +1,114 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Formulario.css'; // Asegúrate de crear este archivo CSS o de ajustar el estilo en línea.
+import axios from 'axios';
+import './Formulario.css';
+import { AuthContext } from '../../context/AuthContext';
 
 const Formulario = ({ plansList, setPlansList }) => {
+  const { token } = useContext(AuthContext);
+
   const [newPlan, setNewPlan] = useState({
-    name: '',
-    price: '',
-    hours: '',
-    consultation: '',
-    minibar: '',
-    description: '',
+    nombre: '',
+    precio: '',
+    features: [{ id: '', descripcion: '' }],
   });
   const [editingIndex, setEditingIndex] = useState(null);
-  const [message, setMessage] = useState('');
   const navigate = useNavigate();
+
+  const getAllPlanes = () => {
+    axios.get('http://localhost:8888/planes')
+      .then(response => {
+        setPlansList(response.data.results);
+      })
+      .catch(error => {
+        console.error('There was an error fetching the plans!', error);
+      });
+  };
+
+  useEffect(() => {
+    getAllPlanes();
+  }, [setPlansList]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewPlan((prevPlan) => ({ ...prevPlan, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleFeatureChange = (featureIndex, field, value) => {
+    const newFeatures = [...newPlan.features];
+    newFeatures[featureIndex] = { ...newFeatures[featureIndex], [field]: value };
+    setNewPlan((prevPlan) => ({ ...prevPlan, features: newFeatures }));
+  };
+
+  const addFeature = () => {
+    setNewPlan((prevPlan) => ({
+      ...prevPlan,
+      features: [...prevPlan.features, { id: '', descripcion: '' }],
+    }));
+  };
+
+  const removeFeature = (featureIndex) => {
+    const newFeatures = newPlan.features.filter((_, i) => i !== featureIndex);
+    setNewPlan((prevPlan) => ({ ...prevPlan, features: newFeatures }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (editingIndex !== null) {
-      const updatedPlans = [...plansList];
-      updatedPlans[editingIndex] = newPlan;
-      setPlansList(updatedPlans);
-      setMessage('Editaste el plan');
-      setEditingIndex(null);
+      const planId = plansList[editingIndex].id;
+      axios.put(`http://localhost:8888/planes/${planId}`, newPlan, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+      })
+        .then(response => {
+          getAllPlanes();
+          setEditingIndex(null);
+          setNewPlan({ nombre: '', precio: '', features: [{ id: '', descripcion: '' }] });
+        })
+        .catch(error => {
+          console.error('TError actualizando plan', error);
+        });
     } else {
-      setPlansList((prevPlans) => [...prevPlans, newPlan]);
-      setMessage('Añadiste un plan');
+      axios.post('http://localhost:8888/planes', newPlan, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then(response => {
+          getAllPlanes();
+          setNewPlan({ nombre: '', precio: '', features: [{ id: '', descripcion: '' }] });
+        })
+        .catch(error => {
+          console.error('Error creando un plan', error);
+        });
     }
-    setNewPlan({ name: '', price: '', hours: '', consultation: '', minibar: '', description: '' });
   };
 
   const handleEdit = (index) => {
-    setNewPlan(plansList[index]);
+    const planToEdit = plansList[index];
+    const features = planToEdit.features;
+    setNewPlan({
+      nombre: planToEdit.nombre,
+      precio: planToEdit.precio,
+      features,
+    });
     setEditingIndex(index);
   };
 
-  const handleDelete = (index) => {
-    const updatedPlans = plansList.filter((_, i) => i !== index);
-    setPlansList(updatedPlans);
-    setMessage('Eliminaste un plan');
+  const handleDelete = (planId) => {
+    axios.delete(`http://localhost:8888/planes/${planId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => {
+        setPlansList(plansList.filter(plan => plan.id !== planId));
+      })
+      .catch(error => {
+        console.error('Error borrando plan', error);
+      });
   };
 
   const handleBack = () => {
@@ -53,15 +118,14 @@ const Formulario = ({ plansList, setPlansList }) => {
   return (
     <div className="formulario-container">
       <button onClick={handleBack}>Volver al inicio</button>
-      {message && <p className="message">{message}</p>}
       <form className="exercise-form" onSubmit={handleSubmit}>
         <h2>{editingIndex !== null ? 'Editar plan' : 'Agregar plan'}</h2>
         <div className="form-group">
           <label>Nombre:</label>
           <input
             type="text"
-            name="name"
-            value={newPlan.name}
+            name="nombre"
+            value={newPlan.nombre}
             onChange={handleChange}
             required
           />
@@ -70,68 +134,55 @@ const Formulario = ({ plansList, setPlansList }) => {
           <label>Precio:</label>
           <input
             type="text"
-            name="price"
-            value={newPlan.price}
+            name="precio"
+            value={newPlan.precio}
             onChange={handleChange}
             required
           />
         </div>
         <div className="form-group">
-          <label>Horas de Ejercicio:</label>
-          <input
-            type="text"
-            name="hours"
-            value={newPlan.hours}
-            onChange={handleChange}
-            required
-          />
+          <label>Features:</label>
+          {newPlan.features.map((feature, index) => (
+            <div key={index} className="feature-group">
+              <input
+                type="text"
+                disabled
+                placeholder="ID del Feature"
+                value={feature.id}
+                onChange={(e) => handleFeatureChange(index, 'id', e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Descripción del Feature"
+                value={feature.descripcion}
+                onChange={(e) => handleFeatureChange(index, 'descripcion', e.target.value)}
+              />
+              <button type="button" onClick={() => removeFeature(index)}>
+                Eliminar Feature
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={addFeature}>Agregar Feature</button>
         </div>
-        <div className="form-group">
-          <label>Consulta Gratuita con Entrenadores:</label>
-          <input
-            type="text"
-            name="consultation"
-            value={newPlan.consultation}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Acceso al Minibar:</label>
-          <input
-            type="text"
-            name="minibar"
-            value={newPlan.minibar}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Descripción:</label>
-          <input
-            type="text"
-            name="description"
-            value={newPlan.description}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit">{editingIndex !== null ? 'Actualizar Plan' : 'Agregar Plan'}</button>
+        <button type="submit">
+          {editingIndex !== null ? 'Actualizar Plan' : 'Agregar Plan'}
+        </button>
       </form>
       <div className="plans-list">
         <h2>Planes de Ejercicio</h2>
         <ul>
           {plansList.map((plan, index) => (
-            <li key={index}>
+            <li key={plan.id}>
               <div>
-                <strong>{plan.name}</strong> - Precio: ${plan.price}
-                <p>Horas de Ejercicio: {plan.hours}</p>
-                <p>Consulta Gratuita con Entrenadores: {plan.consultation}</p>
-                <p>Acceso al Minibar: {plan.minibar}</p>
-                <p>Descripción: {plan.description}</p>
+                <strong>{plan.nombre}</strong> - Precio: ${plan.precio}
+                <ul>
+                  {plan.features.map((feature) => (
+                    <li key={feature.id}>{feature.descripcion}</li>
+                  ))}
+                </ul>
               </div>
               <button onClick={() => handleEdit(index)}>Editar</button>
-              <button onClick={() => handleDelete(index)}>Eliminar</button>
+              <button onClick={() => handleDelete(plan.id)}>Eliminar</button>
             </li>
           ))}
         </ul>

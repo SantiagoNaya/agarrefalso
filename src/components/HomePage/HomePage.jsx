@@ -8,13 +8,13 @@ import Testimonials from '../Testimonials/Testimonials';
 import Join from '../Join/Join';
 import Footer from '../Footer/Footer';
 
-const HomePage = ({ plansList }) => {
+const HomePage = ({ plansList, setPlansList }) => {
   return (
     <div className="App">
       <Hero />
       <Programs />
       <Reasons />
-      <Plans plansList={plansList} />
+      <Plans plansList={plansList} setPlansList={setPlansList}/>
       <Testimonials />
       <Join />
       <Footer />

@@ -1,31 +1,35 @@
-import React from 'react'
-import './Header.css'
-import Logo from '../../assets/logo.png'
-import { useNavigate } from 'react-router-dom';
-const Header  = () => {
-  const navigate =  useNavigate();
+// src/components/Header/Header.js
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
+import './Header.css';
 
+const Header = () => {
+  const { user, logout } = useContext(AuthContext);
 
-  const goToFormulario = () => {
-   navigate('/formulario');
- };
   return (
- <div className="header">
- 
- 
-  <img src={Logo} alt="" className='logo' />
+    <header className="header">
+      <div className="header-left">
+        <Link to="/" className="logo">AgarreFalso</Link>
+      </div>
+      <nav>
+        <ul className="header-menu">
+          {user ? (
+            <>
+              <li>Bienvenido, {user}</li>
+              <li><Link to="/formulario">Gestionar Planes</Link></li>
+              <li><button onClick={logout}>Cerrar Sesión</button></li>
+            </>
+          ) : (
+            <>
+              <li><Link to="/login">Iniciar Sesión</Link></li>
+              <li><Link to="/register">Registrarme</Link></li>
+            </>
+          )}
+        </ul>
+      </nav>
+    </header>
+  );
+};
 
- <ul className='header-menu'>
-    <li>Home</li>
-    <li>Programas</li>
-    <li>Nosotros</li>
-    <li>Testimonios</li>
-    <li onClick={goToFormulario}>Planes</li>
- </ul>
- 
- 
- </div>
-  )
-}
- 
-export default Header
+export default Header;

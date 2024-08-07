@@ -12,7 +12,6 @@ const Hero = () => {
 
 
             <div className="left-h">
-                <Header/>
                 {/* the best ad*/}
                 <div className="the-best-ad">
                     <div></div>
