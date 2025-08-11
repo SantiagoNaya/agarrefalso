@@ -12,22 +12,7 @@ const Header = () => {
       <div className="header-left">
         <Link to="/" className="logo">AgarreFalso</Link>
       </div>
-      <nav>
-        <ul className="header-menu">
-          {user ? (
-            <>
-              <li>Bienvenido, {user}</li>
-              <li><Link to="/formulario">Gestionar Planes</Link></li>
-              <li><button onClick={logout}>Cerrar Sesión</button></li>
-            </>
-          ) : (
-            <>
-              <li><Link to="/login">Iniciar Sesión</Link></li>
-              <li><Link to="/register">Registrarme</Link></li>
-            </>
-          )}
-        </ul>
-      </nav>
+      
     </header>
   );
 };

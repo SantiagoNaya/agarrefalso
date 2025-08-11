@@ -22,12 +22,6 @@ const Join = () => {
 </div>
 </div>
 <div className='right-j'>
-
-
-<form onSubmit={handleSubmit} className="email-container">
-<input type="email" name='user_email' placeholder='Ingresa tu email' />
-<button className='btn btn-j'>Unete Ahora</button>
-</form>
 </div>
    </div>
   )
