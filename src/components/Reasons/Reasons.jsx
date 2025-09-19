@@ -24,7 +24,7 @@ const Reasons=()=> {
 
     <div className="right-r">
     
-        <span>algunas Rasones</span>
+        <span>ALGUNAS RAZONES</span>
     <div>
         <span className='stroke-text'>para</span>
         <span> elegir nos?</span>
@@ -48,17 +48,8 @@ const Reasons=()=> {
             <span>PARTNERS CONFIABLES</span>
             </div>
         </div>
-        <span style={{
-            color: "var(--gray)",
-            fontWeight: "normal",
-         }}
-         >NUESTROS PARTNERS
-         </span>
-           <div className='partners'>
-            <img src={nb} alt="" />
-            <img src={adidas} alt="" />
-            <img src={nike} alt="" />
-           </div>
+       
+    
      </div>
 </div>
   )

@@ -2,6 +2,8 @@
     padding: 0 2rem;
     display: flex;
     grid-template: 2rem;
+     justify-content: flex-start;
+  padding-left: 8rem; /* mueve todo hacia la derecha */
 
 
 
